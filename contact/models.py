@@ -1,15 +1,19 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # id (primary key)
 # first_name (string), last_name (string), phone (string)
 # email (email), created_date (date), description (text)
+# category (foreign key), show (boolean), piture (imagem)
 
 # Depois
-# category (foreign key), show (boolean), piture (imagem)
 # owner (foreign key)
 
 class Category(models.Model):
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
     name = models.CharField(max_length=30)
 
     def __str__(self):
@@ -26,6 +30,12 @@ class Contact(models.Model):
     picture = models.ImageField(blank=True, upload_to="pictures/%Y/%m")
     category = models.ForeignKey(
         Category,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    owner = models.ForeignKey(
+        User,
         on_delete=models.SET_NULL,
         blank=True,
         null=True
