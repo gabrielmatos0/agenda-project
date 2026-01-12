@@ -1,13 +1,48 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from contact.models import Contact
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 def index(request):
-    contacts = Contact.objects.filter(show=True, phone__startswith="+55")
+    contacts = Contact.objects.filter(show=True, phone__startswith="+55").order_by('id')
+
+    paginator = Paginator(contacts, 10)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'contacts': contacts
+        'page_obj': page_obj,
+        'site_title': 'Home | '
+    }
+
+    return render(request, 'contact/index.html', context)
+
+
+def search(request):
+    search_value = request.GET.get('q', '').strip()
+
+    if search_value == '' or search_value is None:
+        return redirect('contact:index')
+
+    contacts = Contact.objects.filter(show=True) \
+        .filter(
+            Q(first_name__icontains=search_value) |
+            Q(last_name__contains=search_value) |
+            Q(phone__contains=search_value) |
+            Q(email__contains=search_value)
+        )
+
+    paginator = Paginator(contacts, 10)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'site_title': 'Home | '
     }
 
     return render(request, 'contact/index.html', context)
@@ -17,8 +52,11 @@ def contact(request, contact_id):
     # single_contact = Contact.objects.filter(pk=contact_id).first()
     single_contact = get_object_or_404(Contact, pk=contact_id, show=True)
 
+    site_title = f'{single_contact.first_name} {single_contact.last_name} | '
+
     context = {
-        'contact': single_contact
+        'contact': single_contact,
+        'site_title': site_title
     }
 
     return render(request, 'contact/contact.html', context)
