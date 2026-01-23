@@ -23,15 +23,6 @@ class ContactForm(forms.ModelForm):
         ),
         help_text='help text to the user'
     )
-    any = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'class-y class-z',
-                'placeholder': 'type anything here'
-            }
-        ),
-        help_text='help text to the user'
-    )
 
     class Meta:
         model = Contact
@@ -60,9 +51,28 @@ class ContactForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = self.cleaned_data
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
 
-        self.add_error(None, ValidationError('falta esse campo aqui meu patrão', code='invalid'))
+        if first_name == last_name:
+            self.add_error('first_name', ValidationError("First name can't be equal to last name", code='invalid'))
+            self.add_error('last_name', ValidationError("First name can't be equal to last name", code='invalid'))
 
-        self.add_error(None, ValidationError('errastes de novo.', code='invalid'))
+        print(self.cleaned_data)
+        print(self.cleaned_data.get('first_name'))
 
         return super().clean()
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        
+        if first_name == 'ABC':
+            self.add_error(
+                'first_name',
+                ValidationError(
+                    'Não digite ABC neste campo',
+                    code='invalid'
+                )
+            )
+
+        return first_name
