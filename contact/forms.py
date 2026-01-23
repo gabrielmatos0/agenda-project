@@ -14,6 +14,25 @@ class ContactForm(forms.ModelForm):
     #     })
 
     ### or like this
+    # class Meta:
+    #     model = Contact
+    #     fields = (
+    #         'first_name', 'last_name', 'phone', 'email', 'description', 'category',
+    #     )
+    #     widgets = {
+    #         'first_name': forms.TextInput(
+    #             attrs={
+    #                 'class': 'class-a class-b',
+    #                 'placeholder': 'type your first name right here',
+    #             },
+    #         )
+    #     }
+
+    #     help_texts = {
+    #         'first_name': 'texto de ajuda pro usuário'
+    #     }
+
+    ### or like this
     first_name = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -27,21 +46,8 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = (
-            'first_name', 'last_name', 'phone',
+            'first_name', 'last_name', 'phone', 'email', 'description', 'category',
         )
-        ### or like this
-        # widgets = {
-        #     'first_name': forms.TextInput(
-        #         attrs={
-        #             'class': 'class-a class-b',
-        #             'placeholder': 'type your first name right here',
-        #         },
-        #     )
-        # }
-
-        # help_texts = {
-        #     'first_name': 'texto de ajuda pro usuário'
-        # }
     ### in all 3 cases I will need to set fields and model attributes in the Meta class 
     # class Meta:
     #     model = MyModel
@@ -65,7 +71,7 @@ class ContactForm(forms.ModelForm):
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
-        
+
         if first_name == 'ABC':
             self.add_error(
                 'first_name',
