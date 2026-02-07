@@ -43,10 +43,18 @@ class ContactForm(forms.ModelForm):
         help_text='help text to the user'
     )
 
+    picture = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*',
+            }
+        )
+    )
+
     class Meta:
         model = Contact
         fields = (
-            'first_name', 'last_name', 'phone', 'email', 'description', 'category',
+            'first_name', 'last_name', 'phone', 'email', 'description', 'category', 'picture',
         )
     ### in all 3 cases I will need to set fields and model attributes in the Meta class 
     # class Meta:
