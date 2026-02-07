@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 
 def index(request):
-    contacts = Contact.objects.filter(show=True, phone__startswith="+55").order_by('id')
+    contacts = Contact.objects.filter(show=True).order_by('id')
 
     paginator = Paginator(contacts, 10)
 
