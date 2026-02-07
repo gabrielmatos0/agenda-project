@@ -14,4 +14,8 @@
         <p><b>Description:</b> {{ contact.description }}</p>
         <p><b>Category:</b> {{ contact.category.name }}</p>
     </div>
+
+    <div class="contact-links">
+        <a href="{% url "contact:update" contact.id %}">Update</a>
+    </div>
 {% endblock content %}
