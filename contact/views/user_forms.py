@@ -1,14 +1,6 @@
-from django.shortcuts import render, redirect
-from contact.models import Contact
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-
+from django.contrib import messages
+from django.shortcuts import render
 from contact.forms import RegisterForm
-from contact.models import Contact
 
 
 def register(request):
@@ -19,6 +11,7 @@ def register(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, f'Usuário cadastrado com sucesso!')
 
     context = {
         'form': form,
