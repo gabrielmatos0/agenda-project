@@ -14,6 +14,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, f'Usuário cadastrado com sucesso!')
+            return redirect('contact:login')
 
     context = {
         'form': form,
@@ -65,7 +66,7 @@ def user_update(request):
             'contact/register.html',
             {'form': form}
         )
-    
+
     form.save()
 
     
