@@ -3,6 +3,7 @@ from contact.models import Contact
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import password_validation
 
 class ContactForm(forms.ModelForm):
 
@@ -142,5 +143,42 @@ class RegisterForm(UserCreationForm):
 class RegisterUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email', 'username')
 
+    email = forms.EmailField(
+        required=True,
+        help_text='Digite seu melhor email'
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        current_email = self.instance.email
+
+        if current_email != email:
+            if User.objects.filter(email=email).exists():
+                self.add_error(
+                    'email',
+                    ValidationError(
+                        'Este email já está cadastrado',
+                        code='invalid'
+                    )
+                )
+
+        return email
+
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        current_username = self.instance.username
+
+        if current_username != username:
+            if User.objects.filter(username=username).exists():
+                self.add_error(
+                    'username',
+                    ValidationError(
+                        'Este username já está sendo usado',
+                        code='invalid'
+                    )
+                )
+
+        return username
