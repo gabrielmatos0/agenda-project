@@ -177,6 +177,8 @@ class RegisterUpdateForm(forms.ModelForm):
         if commit:
             user.save()
 
+        return user
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
