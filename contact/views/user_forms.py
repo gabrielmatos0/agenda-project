@@ -54,7 +54,7 @@ def user_update(request):
     if request.method != 'POST':
         return render(
             request,
-            'contact/register.html',
+            'contact/user-update.html',
             {'form': form}
         )
     
@@ -63,7 +63,7 @@ def user_update(request):
     if not form.is_valid():
         return render(
             request,
-            'contact/register.html',
+            'contact/user-update.html',
             {'form': form}
         )
 
