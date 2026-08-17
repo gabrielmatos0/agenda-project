@@ -69,9 +69,4 @@ def user_update(request):
 
     form.save()
 
-    
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'contact/register.html', context)
+    return redirect('contact:user_update')
