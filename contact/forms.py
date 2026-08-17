@@ -143,12 +143,40 @@ class RegisterForm(UserCreationForm):
 class RegisterUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'username')
+        fields = ('first_name', 'last_name', 'email', 'username', 'password1', 'password2',)
 
     email = forms.EmailField(
         required=True,
         help_text='Digite seu melhor email'
     )
+
+    password1 = forms.CharField(
+        label='Password 1',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        required=False,
+        help_text='New Password'
+    )
+
+    password2 = forms.CharField(
+        label='Password 2',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        required=False,
+        help_text='Use the same password as before'
+    )
+
+
+    def save(self, commit=True):
+        new_password = self.cleaned_data.get('password1')
+        user = super().save(commit=False)
+
+        if new_password:
+            user.set_password(new_password)
+
+        if commit:
+            user.save()
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -182,3 +210,25 @@ class RegisterUpdateForm(forms.ModelForm):
                 )
 
         return username
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+
+        if password1:
+            try:
+                password_validation.validate_password(password1)
+            except ValidationError as errors:
+                self.add_error('password1', ValidationError(errors))
+
+        return password1
+        
+
+    def clean(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+
+        if password1 or password2:
+            if password1 != password2:
+                self.add_error('password2', ValidationError('Senhas não batem', code='invalid'))
+
+        return super().clean()
